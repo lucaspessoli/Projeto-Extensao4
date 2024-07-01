@@ -1,9 +1,6 @@
 ﻿using Npgsql;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WindowsFormsApp1.Model;
 
 namespace WindowsFormsApp1.DAO
@@ -184,11 +181,11 @@ namespace WindowsFormsApp1.DAO
                         object result = cmd.ExecuteScalar();
                         if (result != null)
                         {
-                            return true; // Login válido
+                            return true; 
                         }
                         else
                         {
-                            return false; // Login inválido
+                            return false; 
                         }
                     }
                     catch (NpgsqlException ex)
@@ -252,7 +249,6 @@ namespace WindowsFormsApp1.DAO
 
                 try
                 {
-                    // Buscar a quantidade atual do produto
                     int quantidadeAtual = 0;
                     using (NpgsqlCommand cmdSelect = new NpgsqlCommand(querySelect, connection))
                     {
@@ -260,18 +256,14 @@ namespace WindowsFormsApp1.DAO
                         quantidadeAtual = Convert.ToInt32(cmdSelect.ExecuteScalar());
                     }
 
-                    // Verificar se há estoque suficiente
                     if (quantidadeAtual < quantidadeRemover)
                     {
-                        // Caso não haja estoque suficiente, rolar a transação de volta e retornar false
                         transaction.Rollback();
                         return false;
                     }
 
-                    // Calcular a nova quantidade após remoção
                     int novaQuantidade = quantidadeAtual - quantidadeRemover;
 
-                    // Atualizar o estoque do produto
                     using (NpgsqlCommand cmdUpdate = new NpgsqlCommand(queryUpdate, connection))
                     {
                         cmdUpdate.Parameters.AddWithValue("@NovaQuantidade", novaQuantidade);
@@ -286,7 +278,7 @@ namespace WindowsFormsApp1.DAO
                 catch (NpgsqlException ex)
                 {
                     Console.WriteLine(ex.Message);
-                    transaction.Rollback(); // Em caso de exceção, rolar a transação de volta
+                    transaction.Rollback();
                     return false;
                 }
                 finally
